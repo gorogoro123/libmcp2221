@@ -19,12 +19,6 @@
 #define REPORT_SIZE		MCP2221_REPORT_SIZE
 #define HID_REPORT_SIZE	REPORT_SIZE + 1 // + 1 for report ID, which is always 0 for MCP2221
 
-#ifdef _WIN32
-	#define LIB_EXPORT __declspec(dllexport)
-#else
-	#define LIB_EXPORT
-#endif
-
 #define NEW_REPORT(report) uint8_t report[REPORT_SIZE];
 
 #if !DEBUG_INFO_HID
@@ -423,7 +417,7 @@ static mcp2221_t* open(char* devPath)
 }
 
 // Init, must be called before anything else!
-mcp2221_error LIB_EXPORT mcp2221_init()
+LIB_EXPORT mcp2221_error mcp2221_init()
 {
 	clearUsbDevList();
 
@@ -437,7 +431,7 @@ mcp2221_error LIB_EXPORT mcp2221_init()
 	return MCP2221_SUCCESS;
 }
 
-void LIB_EXPORT mcp2221_exit()
+LIB_EXPORT void mcp2221_exit()
 {
 	clearUsbDevList();
 	hid_exit();
@@ -456,7 +450,7 @@ static int checkThing(wchar_t* val1, wchar_t* val2)
 	return 0;
 }
 
-int LIB_EXPORT mcp2221_find(int vid, int pid, wchar_t* manufacturer, wchar_t* product, wchar_t* serial)
+LIB_EXPORT int mcp2221_find(int vid, int pid, wchar_t* manufacturer, wchar_t* product, wchar_t* serial)
 {
 	int count = 0;
 
@@ -493,7 +487,7 @@ int LIB_EXPORT mcp2221_find(int vid, int pid, wchar_t* manufacturer, wchar_t* pr
 	return count;
 }
 
-int LIB_EXPORT mcp2221_sameDevice(mcp2221_t* dev1, mcp2221_t* dev2)
+LIB_EXPORT int mcp2221_sameDevice(mcp2221_t* dev1, mcp2221_t* dev2)
 {
 	if(!dev1 || !dev2)
 		return 0;
@@ -504,14 +498,14 @@ int LIB_EXPORT mcp2221_sameDevice(mcp2221_t* dev1, mcp2221_t* dev2)
 }
 
 // Open first MCP2221 found
-mcp2221_t* LIB_EXPORT mcp2221_open()
+LIB_EXPORT mcp2221_t* mcp2221_open()
 {
 	if(devList)
 		return open(devList->devPath);
 	return NULL;
 }
 
-mcp2221_t* LIB_EXPORT mcp2221_open_byIndex(int idx)
+LIB_EXPORT mcp2221_t* mcp2221_open_byIndex(int idx)
 {
 	// Find device with ID
 	char* devPath = NULL;
@@ -527,7 +521,7 @@ mcp2221_t* LIB_EXPORT mcp2221_open_byIndex(int idx)
 	return open(devPath);
 }
 
-mcp2221_t* LIB_EXPORT mcp2221_open_bySerial(wchar_t* serial)
+LIB_EXPORT mcp2221_t* mcp2221_open_bySerial(wchar_t* serial)
 {
 	if(!serial)
 		return NULL;
@@ -546,7 +540,7 @@ mcp2221_t* LIB_EXPORT mcp2221_open_bySerial(wchar_t* serial)
 }
 
 // Close handle
-void LIB_EXPORT mcp2221_close(mcp2221_t* device)
+LIB_EXPORT void mcp2221_close(mcp2221_t* device)
 {
 	if(device)
 	{
@@ -557,7 +551,7 @@ void LIB_EXPORT mcp2221_close(mcp2221_t* device)
 	}
 }
 
-mcp2221_error LIB_EXPORT mcp2221_reset(mcp2221_t* device)
+LIB_EXPORT mcp2221_error mcp2221_reset(mcp2221_t* device)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -570,7 +564,7 @@ mcp2221_error LIB_EXPORT mcp2221_reset(mcp2221_t* device)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_isConnected(mcp2221_t* device)
+LIB_EXPORT mcp2221_error mcp2221_isConnected(mcp2221_t* device)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -584,12 +578,12 @@ mcp2221_error LIB_EXPORT mcp2221_isConnected(mcp2221_t* device)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_rawReport(mcp2221_t* device, uint8_t* report)
+LIB_EXPORT mcp2221_error mcp2221_rawReport(mcp2221_t* device, uint8_t* report)
 {
 	return doTransaction(device, report);
 }
 
-mcp2221_error LIB_EXPORT mcp2221_setClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp2221_clkduty_t duty)
+LIB_EXPORT mcp2221_error mcp2221_setClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp2221_clkduty_t duty)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -600,7 +594,7 @@ mcp2221_error LIB_EXPORT mcp2221_setClockOut(mcp2221_t* device, mcp2221_clkdiv_t
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_getClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty)
+mcp2221_error mcp2221_getClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -615,7 +609,7 @@ mcp2221_error LIB_EXPORT mcp2221_getClockOut(mcp2221_t* device, mcp2221_clkdiv_t
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_setDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value)
+LIB_EXPORT mcp2221_error mcp2221_setDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -631,7 +625,7 @@ mcp2221_error LIB_EXPORT mcp2221_setDAC(mcp2221_t* device, mcp2221_dac_ref_t ref
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_getDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value)
+LIB_EXPORT mcp2221_error mcp2221_getDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -649,7 +643,7 @@ mcp2221_error LIB_EXPORT mcp2221_getDAC(mcp2221_t* device, mcp2221_dac_ref_t* re
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_setADC(mcp2221_t* device, mcp2221_adc_ref_t ref)
+LIB_EXPORT mcp2221_error mcp2221_setADC(mcp2221_t* device, mcp2221_adc_ref_t ref)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -660,7 +654,7 @@ mcp2221_error LIB_EXPORT mcp2221_setADC(mcp2221_t* device, mcp2221_adc_ref_t ref
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_getADC(mcp2221_t* device, mcp2221_adc_ref_t* ref)
+LIB_EXPORT mcp2221_error mcp2221_getADC(mcp2221_t* device, mcp2221_adc_ref_t* ref)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -672,7 +666,7 @@ mcp2221_error LIB_EXPORT mcp2221_getADC(mcp2221_t* device, mcp2221_adc_ref_t* re
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_readADC(mcp2221_t* device, int values[MCP2221_ADC_COUNT])
+LIB_EXPORT mcp2221_error mcp2221_readADC(mcp2221_t* device, int values[MCP2221_ADC_COUNT])
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -687,7 +681,7 @@ mcp2221_error LIB_EXPORT mcp2221_readADC(mcp2221_t* device, int values[MCP2221_A
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_setInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig, int clearInt)
+LIB_EXPORT mcp2221_error mcp2221_setInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig, int clearInt)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -700,7 +694,7 @@ mcp2221_error LIB_EXPORT mcp2221_setInterrupt(mcp2221_t* device, mcp2221_int_tri
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_getInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig)
+LIB_EXPORT mcp2221_error mcp2221_getInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -712,7 +706,7 @@ mcp2221_error LIB_EXPORT mcp2221_getInterrupt(mcp2221_t* device, mcp2221_int_tri
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_readInterrupt(mcp2221_t* device, int* state)
+LIB_EXPORT mcp2221_error mcp2221_readInterrupt(mcp2221_t* device, int* state)
 {
 	*state = 0;
 	NEW_REPORT(report);
@@ -725,7 +719,7 @@ mcp2221_error LIB_EXPORT mcp2221_readInterrupt(mcp2221_t* device, int* state)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_clearInterrupt(mcp2221_t* device)
+LIB_EXPORT mcp2221_error mcp2221_clearInterrupt(mcp2221_t* device)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -736,7 +730,7 @@ mcp2221_error LIB_EXPORT mcp2221_clearInterrupt(mcp2221_t* device)
 	return res;
 }
 
-mcp2221_gpioconfset_t LIB_EXPORT mcp2221_GPIOConfInit()
+LIB_EXPORT mcp2221_gpioconfset_t mcp2221_GPIOConfInit()
 {
 	mcp2221_gpioconfset_t confSet;
 	for(int i=0;i<MCP2221_GPIO_COUNT;i++)
@@ -749,7 +743,7 @@ mcp2221_gpioconfset_t LIB_EXPORT mcp2221_GPIOConfInit()
 	return confSet;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_setGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet)
+LIB_EXPORT mcp2221_error mcp2221_setGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -797,7 +791,7 @@ mcp2221_error LIB_EXPORT mcp2221_setGPIOConf(mcp2221_t* device, mcp2221_gpioconf
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_setGPIO(mcp2221_t* device, mcp2221_gpio_t pins, mcp2221_gpio_value_t value)
+LIB_EXPORT mcp2221_error mcp2221_setGPIO(mcp2221_t* device, mcp2221_gpio_t pins, mcp2221_gpio_value_t value)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -824,7 +818,7 @@ mcp2221_error LIB_EXPORT mcp2221_setGPIO(mcp2221_t* device, mcp2221_gpio_t pins,
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_getGPIO(mcp2221_t* device, mcp2221_gpioconfset_t* confGet)
+mcp2221_error mcp2221_getGPIO(mcp2221_t* device, mcp2221_gpioconfset_t* confGet)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -846,7 +840,7 @@ mcp2221_error LIB_EXPORT mcp2221_getGPIO(mcp2221_t* device, mcp2221_gpioconfset_
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_readGPIO(mcp2221_t* device, mcp2221_gpio_value_t values[MCP2221_GPIO_COUNT])
+LIB_EXPORT mcp2221_error mcp2221_readGPIO(mcp2221_t* device, mcp2221_gpio_value_t values[MCP2221_GPIO_COUNT])
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -861,22 +855,22 @@ mcp2221_error LIB_EXPORT mcp2221_readGPIO(mcp2221_t* device, mcp2221_gpio_value_
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveManufacturer(mcp2221_t* device, wchar_t* buffer)
+LIB_EXPORT mcp2221_error mcp2221_saveManufacturer(mcp2221_t* device, wchar_t* buffer)
 {
 	return setDescriptor(device, buffer, FLASH_SECTION_USBMANUFACTURER);
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveProduct(mcp2221_t* device, wchar_t* buffer)
+LIB_EXPORT mcp2221_error mcp2221_saveProduct(mcp2221_t* device, wchar_t* buffer)
 {
 	return setDescriptor(device, buffer, FLASH_SECTION_USBPRODUCT);
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveSerial(mcp2221_t* device, wchar_t* buffer)
+LIB_EXPORT mcp2221_error mcp2221_saveSerial(mcp2221_t* device, wchar_t* buffer)
 {
 	return setDescriptor(device, buffer, FLASH_SECTION_USBSERIAL);
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveVIDPID(mcp2221_t* device, int vid, int pid)
+LIB_EXPORT mcp2221_error mcp2221_saveVIDPID(mcp2221_t* device, int vid, int pid)
 {
 	if(vid < 1 || pid < 1 || vid > USHRT_MAX || pid > USHRT_MAX)
 		return MCP2221_INVALID_ARG;
@@ -912,7 +906,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveVIDPID(mcp2221_t* device, int vid, int pid)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveSerialEnumerate(mcp2221_t* device, int enumerate)
+LIB_EXPORT mcp2221_error mcp2221_saveSerialEnumerate(mcp2221_t* device, int enumerate)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -933,7 +927,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveSerialEnumerate(mcp2221_t* device, int enum
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveMilliamps(mcp2221_t* device, int milliamps)
+LIB_EXPORT mcp2221_error mcp2221_saveMilliamps(mcp2221_t* device, int milliamps)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -958,7 +952,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveMilliamps(mcp2221_t* device, int milliamps)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_savePowerSource(mcp2221_t* device, mcp2221_pwrsrc_t source)
+LIB_EXPORT mcp2221_error mcp2221_savePowerSource(mcp2221_t* device, mcp2221_pwrsrc_t source)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -978,7 +972,7 @@ mcp2221_error LIB_EXPORT mcp2221_savePowerSource(mcp2221_t* device, mcp2221_pwrs
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t wakeup)
+LIB_EXPORT mcp2221_error mcp2221_saveRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t wakeup)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -998,7 +992,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveRemoteWakeup(mcp2221_t* device, mcp2221_wak
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_savePolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int polarity)
+LIB_EXPORT mcp2221_error mcp2221_savePolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int polarity)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1019,7 +1013,7 @@ mcp2221_error LIB_EXPORT mcp2221_savePolarity(mcp2221_t* device, mcp2221_dedipin
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveClockOut(mcp2221_t* device, mcp2221_clkdiv_t clkdiv, mcp2221_clkduty_t duty)
+LIB_EXPORT mcp2221_error mcp2221_saveClockOut(mcp2221_t* device, mcp2221_clkdiv_t clkdiv, mcp2221_clkduty_t duty)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1037,7 +1031,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveClockOut(mcp2221_t* device, mcp2221_clkdiv_
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value)
+LIB_EXPORT mcp2221_error mcp2221_saveDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1062,7 +1056,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveDAC(mcp2221_t* device, mcp2221_dac_ref_t re
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveADC(mcp2221_t* device, mcp2221_adc_ref_t ref)
+LIB_EXPORT mcp2221_error mcp2221_saveADC(mcp2221_t* device, mcp2221_adc_ref_t ref)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1082,7 +1076,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveADC(mcp2221_t* device, mcp2221_adc_ref_t re
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig)
+LIB_EXPORT mcp2221_error mcp2221_saveInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1116,7 +1110,7 @@ mcp2221_error LIB_EXPORT mcp2221_saveInterrupt(mcp2221_t* device, mcp2221_int_tr
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_saveGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet)
+LIB_EXPORT mcp2221_error mcp2221_saveGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1164,17 +1158,17 @@ mcp2221_error LIB_EXPORT mcp2221_saveGPIOConf(mcp2221_t* device, mcp2221_gpiocon
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadManufacturer(mcp2221_t* device, wchar_t* buffer)
+LIB_EXPORT mcp2221_error mcp2221_loadManufacturer(mcp2221_t* device, wchar_t* buffer)
 {
 	return getDescriptor2(device, buffer, FLASH_SECTION_USBMANUFACTURER);
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadProduct(mcp2221_t* device, wchar_t* buffer)
+LIB_EXPORT mcp2221_error mcp2221_loadProduct(mcp2221_t* device, wchar_t* buffer)
 {
 	return getDescriptor2(device, buffer, FLASH_SECTION_USBPRODUCT);
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadSerial(mcp2221_t* device, wchar_t* buffer)
+LIB_EXPORT mcp2221_error mcp2221_loadSerial(mcp2221_t* device, wchar_t* buffer)
 {
 	return getDescriptor2(device, buffer, FLASH_SECTION_USBSERIAL);
 }
@@ -1190,7 +1184,7 @@ mcp2221_error mcp2221_loadVIDPID(mcp2221_t* device, int* vid, int* pid)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadSerialEnumerate(mcp2221_t* device, int* enumerate)
+LIB_EXPORT mcp2221_error mcp2221_loadSerialEnumerate(mcp2221_t* device, int* enumerate)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1200,7 +1194,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadSerialEnumerate(mcp2221_t* device, int* enu
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadMilliamps(mcp2221_t* device, int* milliamps)
+LIB_EXPORT mcp2221_error mcp2221_loadMilliamps(mcp2221_t* device, int* milliamps)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1210,7 +1204,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadMilliamps(mcp2221_t* device, int* milliamps
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadPowerSource(mcp2221_t* device, mcp2221_pwrsrc_t* source)
+LIB_EXPORT mcp2221_error mcp2221_loadPowerSource(mcp2221_t* device, mcp2221_pwrsrc_t* source)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1220,7 +1214,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadPowerSource(mcp2221_t* device, mcp2221_pwrs
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t* wakeup)
+LIB_EXPORT mcp2221_error mcp2221_loadRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t* wakeup)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1230,7 +1224,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadRemoteWakeup(mcp2221_t* device, mcp2221_wak
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadPolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int* polarity)
+LIB_EXPORT mcp2221_error mcp2221_loadPolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int* polarity)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1240,7 +1234,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadPolarity(mcp2221_t* device, mcp2221_dedipin
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty)
+LIB_EXPORT mcp2221_error mcp2221_loadClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1251,7 +1245,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadClockOut(mcp2221_t* device, mcp2221_clkdiv_
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value)
+LIB_EXPORT mcp2221_error mcp2221_loadDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1265,7 +1259,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadDAC(mcp2221_t* device, mcp2221_dac_ref_t* r
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadADC(mcp2221_t* device, mcp2221_adc_ref_t* ref)
+LIB_EXPORT mcp2221_error mcp2221_loadADC(mcp2221_t* device, mcp2221_adc_ref_t* ref)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1275,7 +1269,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadADC(mcp2221_t* device, mcp2221_adc_ref_t* r
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig)
+mcp2221_error mcp2221_loadInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1292,7 +1286,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadInterrupt(mcp2221_t* device, mcp2221_int_tr
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_loadGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confGet)
+LIB_EXPORT mcp2221_error mcp2221_loadGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confGet)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1315,7 +1309,7 @@ mcp2221_error LIB_EXPORT mcp2221_loadGPIOConf(mcp2221_t* device, mcp2221_gpiocon
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_i2cWrite(mcp2221_t* device, int address, void* data, int len, mcp2221_i2crw_t type)
+LIB_EXPORT mcp2221_error mcp2221_i2cWrite(mcp2221_t* device, int address, void* data, int len, mcp2221_i2crw_t type)
 {
 	address <<= 1;
 
@@ -1352,7 +1346,7 @@ mcp2221_error LIB_EXPORT mcp2221_i2cWrite(mcp2221_t* device, int address, void* 
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_i2cRead(mcp2221_t* device, int address, int len, mcp2221_i2crw_t type)
+LIB_EXPORT mcp2221_error mcp2221_i2cRead(mcp2221_t* device, int address, int len, mcp2221_i2crw_t type)
 {
 	address <<= 1;
 
@@ -1385,7 +1379,7 @@ mcp2221_error LIB_EXPORT mcp2221_i2cRead(mcp2221_t* device, int address, int len
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_i2cGet(mcp2221_t* device, void* data, int len)
+LIB_EXPORT mcp2221_error mcp2221_i2cGet(mcp2221_t* device, void* data, int len)
 {
 	// TODO: support len >= 60
 	if(len > 60)
@@ -1403,7 +1397,7 @@ mcp2221_error LIB_EXPORT mcp2221_i2cGet(mcp2221_t* device, void* data, int len)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_i2cCancel(mcp2221_t* device)
+LIB_EXPORT mcp2221_error mcp2221_i2cCancel(mcp2221_t* device)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1415,7 +1409,7 @@ mcp2221_error LIB_EXPORT mcp2221_i2cCancel(mcp2221_t* device)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_i2cState(mcp2221_t* device, mcp2221_i2c_state_t* state)
+LIB_EXPORT mcp2221_error mcp2221_i2cState(mcp2221_t* device, mcp2221_i2c_state_t* state)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1427,7 +1421,7 @@ mcp2221_error LIB_EXPORT mcp2221_i2cState(mcp2221_t* device, mcp2221_i2c_state_t
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_i2cDivider(mcp2221_t* device, int i2cdiv)
+LIB_EXPORT mcp2221_error mcp2221_i2cDivider(mcp2221_t* device, int i2cdiv)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;
@@ -1440,7 +1434,7 @@ mcp2221_error LIB_EXPORT mcp2221_i2cDivider(mcp2221_t* device, int i2cdiv)
 	return res;
 }
 
-mcp2221_error LIB_EXPORT mcp2221_i2cReadPins(mcp2221_t* device, mcp2221_i2cpins_t* pins)
+LIB_EXPORT mcp2221_error mcp2221_i2cReadPins(mcp2221_t* device, mcp2221_i2cpins_t* pins)
 {
 	NEW_REPORT(report);
 	mcp2221_error res;

@@ -280,19 +280,25 @@ typedef struct{
 extern "C" {
 #endif
 
+#if defined(_EXPORTING)
+   #define LIB_EXPORT    __declspec(dllexport)
+#else
+   #define LIB_EXPORT    __declspec(dllimport)
+#endif
+
 /**
 * @brief Initialise, must be called before anything else!
 *
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_init(void);
+LIB_EXPORT mcp2221_error mcp2221_init(void);
 
 /**
 * @brief TODO
 *
 * @return (none)
 */
-void mcp2221_exit(void);
+LIB_EXPORT void mcp2221_exit(void);
 
 /**
 * @brief Find all HIDs matching the supplied parameters, must be called before attempting to open a device
@@ -304,28 +310,28 @@ void mcp2221_exit(void);
 * @param [serial] Serial to match, NULL will match all serials (enumerating with serial needs to be enabled for this to work - mcp2221_saveSerialEnumerate())
 * @return Number of devices found
 */
-int mcp2221_find(int vid, int pid, wchar_t* manufacturer, wchar_t* product, wchar_t* serial);
+LIB_EXPORT int mcp2221_find(int vid, int pid, wchar_t* manufacturer, wchar_t* product, wchar_t* serial);
 
 /**
 * @brief TODO
 *
 * @return 1 if devices are the same, 0 if not
 */
-int mcp2221_sameDevice(mcp2221_t* dev1, mcp2221_t* dev2);
+LIB_EXPORT int mcp2221_sameDevice(mcp2221_t* dev1, mcp2221_t* dev2);
 
 /**
 * @brief Open first MCP2221 device found
 *
 * @return ::mcp2221_error error code
 */
-mcp2221_t* mcp2221_open(void);
+LIB_EXPORT mcp2221_t* mcp2221_open(void);
 
 /**
 * @brief Open device with specified index number (starting from 0 up to however many devices were found)
 *
 * @return ::mcp2221_error error code
 */
-mcp2221_t* mcp2221_open_byIndex(int idx);
+LIB_EXPORT mcp2221_t* mcp2221_open_byIndex(int idx);
 
 /**
 * @brief Open device with specified serial
@@ -334,14 +340,14 @@ mcp2221_t* mcp2221_open_byIndex(int idx);
 *
 * @return ::mcp2221_error error code
 */
-mcp2221_t* mcp2221_open_bySerial(wchar_t* serial);
+LIB_EXPORT mcp2221_t* mcp2221_open_bySerial(wchar_t* serial);
 
 /**
 * @brief Close device
 *
 * @return (none)
 */
-void mcp2221_close(mcp2221_t* device);
+LIB_EXPORT void mcp2221_close(mcp2221_t* device);
 
 /**
 * @brief Perform a reset of the device
@@ -349,7 +355,7 @@ void mcp2221_close(mcp2221_t* device);
 * @param [device] Device to operate on
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_reset(mcp2221_t* device);
+LIB_EXPORT mcp2221_error mcp2221_reset(mcp2221_t* device);
 
 /**
 * @brief Check to see if the device is still connected, should return ::MCP2221_SUCCESS
@@ -357,7 +363,7 @@ mcp2221_error mcp2221_reset(mcp2221_t* device);
 * @param [device] Device to operate on
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_isConnected(mcp2221_t* device);
+LIB_EXPORT mcp2221_error mcp2221_isConnected(mcp2221_t* device);
 
 /**
 * @brief Send a custom report, the response is placed in the same buffer
@@ -366,14 +372,14 @@ mcp2221_error mcp2221_isConnected(mcp2221_t* device);
 * @param [report] The report, should be an array with at least ::MCP2221_REPORT_SIZE elements
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_rawReport(mcp2221_t* device, uint8_t* report);
+LIB_EXPORT mcp2221_error mcp2221_rawReport(mcp2221_t* device, uint8_t* report);
 
 /**
 * @brief TODO
 *
 * @return ::mcp2221_gpioconfset_t 
 */
-mcp2221_gpioconfset_t mcp2221_GPIOConfInit(void);
+LIB_EXPORT mcp2221_gpioconfset_t mcp2221_GPIOConfInit(void);
 
 /**
 * @brief Set the clock reference output divider and duty cycle (SRAM)
@@ -383,7 +389,7 @@ mcp2221_gpioconfset_t mcp2221_GPIOConfInit(void);
 * @param [duty] Duty cycle
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_setClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp2221_clkduty_t duty);
+LIB_EXPORT mcp2221_error mcp2221_setClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp2221_clkduty_t duty);
 
 /**
 * @brief Set the DAC voltage reference and output value (SRAM)
@@ -393,7 +399,7 @@ mcp2221_error mcp2221_setClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp22
 * @param [value] Output value (0 - 31)
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_setDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value);
+LIB_EXPORT mcp2221_error mcp2221_setDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value);
 
 /**
 * @brief Set the ADC voltage reference (SRAM)
@@ -402,7 +408,7 @@ mcp2221_error mcp2221_setDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value
 * @param [ref] Voltage reference
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_setADC(mcp2221_t* device, mcp2221_adc_ref_t ref);
+LIB_EXPORT mcp2221_error mcp2221_setADC(mcp2221_t* device, mcp2221_adc_ref_t ref);
 
 /**
 * @brief Set the interrupt trigger mode and optionally clear pending interrupt (SRAM)
@@ -412,7 +418,7 @@ mcp2221_error mcp2221_setADC(mcp2221_t* device, mcp2221_adc_ref_t ref);
 * @param [clearInt] Clear pending interrupt (0 = Don't clear, 1 = Clear)
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_setInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig, int clearInt);
+LIB_EXPORT mcp2221_error mcp2221_setInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig, int clearInt);
 
 /**
 * @brief Apply GPIO configuration
@@ -421,7 +427,7 @@ mcp2221_error mcp2221_setInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig, i
 * @param [confSet] Pointer to ::mcp2221_gpioconfset_t struct
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_setGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet);
+LIB_EXPORT mcp2221_error mcp2221_setGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet);
 
 /**
 * @brief Set GPIO pin output values
@@ -431,7 +437,7 @@ mcp2221_error mcp2221_setGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* conf
 * @param [value] The new value
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_setGPIO(mcp2221_t* device, mcp2221_gpio_t pins, mcp2221_gpio_value_t value);
+LIB_EXPORT mcp2221_error mcp2221_setGPIO(mcp2221_t* device, mcp2221_gpio_t pins, mcp2221_gpio_value_t value);
 
 /**
 * @brief Get the current clock output divider (SRAM)
@@ -441,7 +447,7 @@ mcp2221_error mcp2221_setGPIO(mcp2221_t* device, mcp2221_gpio_t pins, mcp2221_gp
 * @param [duty] Pointer to ::mcp2221_clkduty_t variable where value will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_getClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty);
+LIB_EXPORT mcp2221_error mcp2221_getClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty);
 
 /**
 * @brief Get the current DAC voltage reference and output value (SRAM)
@@ -451,7 +457,7 @@ mcp2221_error mcp2221_getClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2
 * @param [value] Pointer to int variable where value will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_getDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value);
+LIB_EXPORT mcp2221_error mcp2221_getDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value);
 
 /**
 * @brief Get the current ADC voltage reference (SRAM)
@@ -460,7 +466,7 @@ mcp2221_error mcp2221_getDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* val
 * @param [ref] Pointer to ::mcp2221_adc_ref_t variable where value will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_getADC(mcp2221_t* device, mcp2221_adc_ref_t* ref);
+LIB_EXPORT mcp2221_error mcp2221_getADC(mcp2221_t* device, mcp2221_adc_ref_t* ref);
 
 /**
 * @brief Get the current interrupt trigger mode (SRAM)
@@ -469,7 +475,7 @@ mcp2221_error mcp2221_getADC(mcp2221_t* device, mcp2221_adc_ref_t* ref);
 * @param [trig] Pointer to ::mcp2221_int_trig_t variable where value will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_getInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig);
+LIB_EXPORT mcp2221_error mcp2221_getInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig);
 
 /**
 * @brief Get the current GPIO configuration (SRAM)
@@ -478,7 +484,7 @@ mcp2221_error mcp2221_getInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig);
 * @param [confGet] Pointer to ::mcp2221_gpioconfset_t struct where data will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_getGPIO(mcp2221_t* device, mcp2221_gpioconfset_t* confGet);
+LIB_EXPORT mcp2221_error mcp2221_getGPIO(mcp2221_t* device, mcp2221_gpioconfset_t* confGet);
 
 /**
 * @brief Read ADC values
@@ -487,7 +493,7 @@ mcp2221_error mcp2221_getGPIO(mcp2221_t* device, mcp2221_gpioconfset_t* confGet)
 * @param [values] Int array of at least ::MCP2221_ADC_COUNT elements where values will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_readADC(mcp2221_t* device, int values[MCP2221_ADC_COUNT]);
+LIB_EXPORT mcp2221_error mcp2221_readADC(mcp2221_t* device, int values[MCP2221_ADC_COUNT]);
 
 /**
 * @brief Read interrupt state
@@ -496,7 +502,7 @@ mcp2221_error mcp2221_readADC(mcp2221_t* device, int values[MCP2221_ADC_COUNT]);
 * @param [state] Pointer to variable where state will be placed (0 = not triggered, 1 = triggered)
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_readInterrupt(mcp2221_t* device, int* state);
+LIB_EXPORT mcp2221_error mcp2221_readInterrupt(mcp2221_t* device, int* state);
 
 /**
 * @brief Clear interrupt state
@@ -504,7 +510,7 @@ mcp2221_error mcp2221_readInterrupt(mcp2221_t* device, int* state);
 * @param [device] Device to operate on
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_clearInterrupt(mcp2221_t* device);
+LIB_EXPORT mcp2221_error mcp2221_clearInterrupt(mcp2221_t* device);
 
 /**
 * @brief Read GPIO values
@@ -513,7 +519,7 @@ mcp2221_error mcp2221_clearInterrupt(mcp2221_t* device);
 * @param [values] ::mcp2221_gpio_value_t array of at least ::MCP2221_GPIO_COUNT elements where values will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_readGPIO(mcp2221_t* device, mcp2221_gpio_value_t values[MCP2221_GPIO_COUNT]);
+LIB_EXPORT mcp2221_error mcp2221_readGPIO(mcp2221_t* device, mcp2221_gpio_value_t values[MCP2221_GPIO_COUNT]);
 
 /**
 * @brief Save new manufacturer USB descriptor string to flash (max 30 characters)
@@ -522,7 +528,7 @@ mcp2221_error mcp2221_readGPIO(mcp2221_t* device, mcp2221_gpio_value_t values[MC
 * @param [buffer] The wide string buffer to read from
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveManufacturer(mcp2221_t* device, wchar_t* buffer);
+LIB_EXPORT mcp2221_error mcp2221_saveManufacturer(mcp2221_t* device, wchar_t* buffer);
 
 /**
 * @brief Save new product USB descriptor string to flash (max 30 characters)
@@ -531,7 +537,7 @@ mcp2221_error mcp2221_saveManufacturer(mcp2221_t* device, wchar_t* buffer);
 * @param [buffer] The wide string buffer to read from
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveProduct(mcp2221_t* device, wchar_t* buffer);
+LIB_EXPORT mcp2221_error mcp2221_saveProduct(mcp2221_t* device, wchar_t* buffer);
 
 /**
 * @brief Save new serial USB descriptor string to flash (max 30 characters)
@@ -540,7 +546,7 @@ mcp2221_error mcp2221_saveProduct(mcp2221_t* device, wchar_t* buffer);
 * @param [buffer] The wide string buffer to read from
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveSerial(mcp2221_t* device, wchar_t* buffer);
+LIB_EXPORT mcp2221_error mcp2221_saveSerial(mcp2221_t* device, wchar_t* buffer);
 
 /**
 * @brief Save new VID and PID to flash
@@ -550,7 +556,7 @@ mcp2221_error mcp2221_saveSerial(mcp2221_t* device, wchar_t* buffer);
 * @param [pid] New PID
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveVIDPID(mcp2221_t* device, int vid, int pid);
+LIB_EXPORT mcp2221_error mcp2221_saveVIDPID(mcp2221_t* device, int vid, int pid);
 
 /**
 * @brief Enable/disable enumerating with serial number
@@ -559,7 +565,7 @@ mcp2221_error mcp2221_saveVIDPID(mcp2221_t* device, int vid, int pid);
 * @param [enumerate] 1 = Enable, 0 = Disable
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveSerialEnumerate(mcp2221_t* device, int enumerate);
+LIB_EXPORT mcp2221_error mcp2221_saveSerialEnumerate(mcp2221_t* device, int enumerate);
 
 /**
 * @brief Set USB current limit
@@ -568,7 +574,7 @@ mcp2221_error mcp2221_saveSerialEnumerate(mcp2221_t* device, int enumerate);
 * @param [milliamps] 2 - 500
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveMilliamps(mcp2221_t* device, int milliamps);
+LIB_EXPORT mcp2221_error mcp2221_saveMilliamps(mcp2221_t* device, int milliamps);
 
 /**
 * @brief Set power source
@@ -577,7 +583,7 @@ mcp2221_error mcp2221_saveMilliamps(mcp2221_t* device, int milliamps);
 * @param [source] Power source
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_savePowerSource(mcp2221_t* device, mcp2221_pwrsrc_t source);
+LIB_EXPORT mcp2221_error mcp2221_savePowerSource(mcp2221_t* device, mcp2221_pwrsrc_t source);
 
 /**
 * @brief Enable/disable remote host wakeup
@@ -586,7 +592,7 @@ mcp2221_error mcp2221_savePowerSource(mcp2221_t* device, mcp2221_pwrsrc_t source
 * @param [wakeup] Enable/disable
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t wakeup);
+LIB_EXPORT mcp2221_error mcp2221_saveRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t wakeup);
 
 /**
 * @brief Save polarity of dedicated pin functions to flash
@@ -596,7 +602,7 @@ mcp2221_error mcp2221_saveRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t wakeu
 * @param [polarity] 0 = Default off, 1 = Default on
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_savePolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int polarity);
+LIB_EXPORT mcp2221_error mcp2221_savePolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int polarity);
 
 /**
 * @brief Save clock reference output settings to flash 
@@ -606,7 +612,7 @@ mcp2221_error mcp2221_savePolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int
 * @param [duty] Duty cycle
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp2221_clkduty_t duty);
+LIB_EXPORT mcp2221_error mcp2221_saveClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp2221_clkduty_t duty);
 
 /**
 * @brief Save the DAC voltage reference and output value to flash
@@ -616,7 +622,7 @@ mcp2221_error mcp2221_saveClockOut(mcp2221_t* device, mcp2221_clkdiv_t div, mcp2
 * @param [value] Output value (0 - 31)
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value);
+LIB_EXPORT mcp2221_error mcp2221_saveDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int value);
 
 /**
 * @brief Save the ADC voltage reference to flash
@@ -625,7 +631,7 @@ mcp2221_error mcp2221_saveDAC(mcp2221_t* device, mcp2221_dac_ref_t ref, int valu
 * @param [ref] Voltage reference
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveADC(mcp2221_t* device, mcp2221_adc_ref_t ref);
+LIB_EXPORT mcp2221_error mcp2221_saveADC(mcp2221_t* device, mcp2221_adc_ref_t ref);
 
 /**
 * @brief Save the interrupt trigger mode to flash
@@ -634,7 +640,7 @@ mcp2221_error mcp2221_saveADC(mcp2221_t* device, mcp2221_adc_ref_t ref);
 * @param [trig] Trigger mode
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig);
+LIB_EXPORT mcp2221_error mcp2221_saveInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig);
 
 /**
 * @brief Save GPIO configuration to flash
@@ -643,7 +649,7 @@ mcp2221_error mcp2221_saveInterrupt(mcp2221_t* device, mcp2221_int_trig_t trig);
 * @param [confSet] Pointer to ::mcp2221_gpioconfset_t struct to place configuration data into
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_saveGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet);
+LIB_EXPORT mcp2221_error mcp2221_saveGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet);
 
 /**
 * @brief Read manufacturer USB descriptor string from flash
@@ -652,7 +658,7 @@ mcp2221_error mcp2221_saveGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* con
 * @param [buffer] Wide string buffer of at least 31 elements (62 bytes)
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadManufacturer(mcp2221_t* device, wchar_t* buffer);
+LIB_EXPORT mcp2221_error mcp2221_loadManufacturer(mcp2221_t* device, wchar_t* buffer);
 
 /**
 * @brief Read product USB descriptor string from flash
@@ -661,7 +667,7 @@ mcp2221_error mcp2221_loadManufacturer(mcp2221_t* device, wchar_t* buffer);
 * @param [buffer] Wide string buffer of at least 31 elements (62 bytes)
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadProduct(mcp2221_t* device, wchar_t* buffer);
+LIB_EXPORT mcp2221_error mcp2221_loadProduct(mcp2221_t* device, wchar_t* buffer);
 
 /**
 * @brief Read serial USB descriptor string from flash
@@ -670,7 +676,7 @@ mcp2221_error mcp2221_loadProduct(mcp2221_t* device, wchar_t* buffer);
 * @param [buffer] Wide string buffer of at least 31 elements (62 bytes)
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadSerial(mcp2221_t* device, wchar_t* buffer);
+LIB_EXPORT mcp2221_error mcp2221_loadSerial(mcp2221_t* device, wchar_t* buffer);
 
 /**
 * @brief Read VID and PID from flash
@@ -680,7 +686,7 @@ mcp2221_error mcp2221_loadSerial(mcp2221_t* device, wchar_t* buffer);
 * @param [pid] 
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadVIDPID(mcp2221_t* device, int* vid, int* pid);
+LIB_EXPORT mcp2221_error mcp2221_loadVIDPID(mcp2221_t* device, int* vid, int* pid);
 
 /**
 * @brief Read serial enumeration setting from flash
@@ -689,7 +695,7 @@ mcp2221_error mcp2221_loadVIDPID(mcp2221_t* device, int* vid, int* pid);
 * @param [enumerate] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadSerialEnumerate(mcp2221_t* device, int* enumerate);
+LIB_EXPORT mcp2221_error mcp2221_loadSerialEnumerate(mcp2221_t* device, int* enumerate);
 
 /**
 * @brief Read current limit from flash
@@ -698,7 +704,7 @@ mcp2221_error mcp2221_loadSerialEnumerate(mcp2221_t* device, int* enumerate);
 * @param [milliamps] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadMilliamps(mcp2221_t* device, int* milliamps);
+LIB_EXPORT mcp2221_error mcp2221_loadMilliamps(mcp2221_t* device, int* milliamps);
 
 /**
 * @brief Read power source from flash
@@ -707,7 +713,7 @@ mcp2221_error mcp2221_loadMilliamps(mcp2221_t* device, int* milliamps);
 * @param [source] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadPowerSource(mcp2221_t* device, mcp2221_pwrsrc_t* source);
+LIB_EXPORT mcp2221_error mcp2221_loadPowerSource(mcp2221_t* device, mcp2221_pwrsrc_t* source);
 
 /**
 * @brief Read remote USB host wakeup from flash
@@ -716,7 +722,7 @@ mcp2221_error mcp2221_loadPowerSource(mcp2221_t* device, mcp2221_pwrsrc_t* sourc
 * @param [wakeup] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t* wakeup);
+LIB_EXPORT mcp2221_error mcp2221_loadRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t* wakeup);
 
 /**
 * @brief Read dedicated pin polarity from flash
@@ -726,7 +732,7 @@ mcp2221_error mcp2221_loadRemoteWakeup(mcp2221_t* device, mcp2221_wakeup_t* wake
 * @param [polarity] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadPolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int* polarity);
+LIB_EXPORT mcp2221_error mcp2221_loadPolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int* polarity);
 
 /**
 * @brief Read clock output settings from flash
@@ -736,7 +742,7 @@ mcp2221_error mcp2221_loadPolarity(mcp2221_t* device, mcp2221_dedipin_t pin, int
 * @param [duty] Pointer to ::mcp2221_clkduty_t variable where value will be placed
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty);
+LIB_EXPORT mcp2221_error mcp2221_loadClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp2221_clkduty_t* duty);
 
 /**
 * @brief Read DAC settings from flash
@@ -746,7 +752,7 @@ mcp2221_error mcp2221_loadClockOut(mcp2221_t* device, mcp2221_clkdiv_t* div, mcp
 * @param [value] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value);
+LIB_EXPORT mcp2221_error mcp2221_loadDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* value);
 
 /**
 * @brief Read ADC settings from flash
@@ -755,7 +761,7 @@ mcp2221_error mcp2221_loadDAC(mcp2221_t* device, mcp2221_dac_ref_t* ref, int* va
 * @param [ref] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadADC(mcp2221_t* device, mcp2221_adc_ref_t* ref);
+LIB_EXPORT mcp2221_error mcp2221_loadADC(mcp2221_t* device, mcp2221_adc_ref_t* ref);
 
 /**
 * @brief Read interrupt settings from flash
@@ -764,7 +770,7 @@ mcp2221_error mcp2221_loadADC(mcp2221_t* device, mcp2221_adc_ref_t* ref);
 * @param [trig] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig);
+LIB_EXPORT mcp2221_error mcp2221_loadInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig);
 
 /**
 * @brief Read GPIO config from flash
@@ -773,7 +779,7 @@ mcp2221_error mcp2221_loadInterrupt(mcp2221_t* device, mcp2221_int_trig_t* trig)
 * @param [confSet] TODO
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_loadGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet);
+LIB_EXPORT mcp2221_error mcp2221_loadGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* confSet);
 
 /**
 * @brief Perform an I2C write
@@ -786,7 +792,7 @@ mcp2221_error mcp2221_loadGPIOConf(mcp2221_t* device, mcp2221_gpioconfset_t* con
 * @return ::mcp2221_error error code
 * @note I2C is not fully implemented yet
 */
-mcp2221_error mcp2221_i2cWrite(mcp2221_t* device, int address, void* data, int len, mcp2221_i2crw_t type);
+LIB_EXPORT mcp2221_error mcp2221_i2cWrite(mcp2221_t* device, int address, void* data, int len, mcp2221_i2crw_t type);
 
 /**
 * @brief Perform an I2C read
@@ -798,7 +804,7 @@ mcp2221_error mcp2221_i2cWrite(mcp2221_t* device, int address, void* data, int l
 * @return ::mcp2221_error error code
 * @note I2C is not fully implemented yet
 */
-mcp2221_error mcp2221_i2cRead(mcp2221_t* device, int address, int len, mcp2221_i2crw_t type);
+LIB_EXPORT mcp2221_error mcp2221_i2cRead(mcp2221_t* device, int address, int len, mcp2221_i2crw_t type);
 
 /**
 * @brief Get the data that was read
@@ -809,7 +815,7 @@ mcp2221_error mcp2221_i2cRead(mcp2221_t* device, int address, int len, mcp2221_i
 * @return ::mcp2221_error error code
 * @note I2C is not fully implemented yet
 */
-mcp2221_error mcp2221_i2cGet(mcp2221_t* device, void* data, int len);
+LIB_EXPORT mcp2221_error mcp2221_i2cGet(mcp2221_t* device, void* data, int len);
 
 /**
 * @brief TODO
@@ -818,7 +824,7 @@ mcp2221_error mcp2221_i2cGet(mcp2221_t* device, void* data, int len);
 * @return ::mcp2221_error error code
 * @note I2C is not fully implemented yet
 */
-mcp2221_error mcp2221_i2cCancel(mcp2221_t* device);
+LIB_EXPORT mcp2221_error mcp2221_i2cCancel(mcp2221_t* device);
 
 /**
 * @brief TODO
@@ -828,7 +834,7 @@ mcp2221_error mcp2221_i2cCancel(mcp2221_t* device);
 * @return ::mcp2221_error error code
 * @note I2C is not fully implemented yet
 */
-mcp2221_error mcp2221_i2cState(mcp2221_t* device, mcp2221_i2c_state_t* state);
+LIB_EXPORT mcp2221_error mcp2221_i2cState(mcp2221_t* device, mcp2221_i2c_state_t* state);
 
 /**
 * @brief TODO
@@ -838,7 +844,7 @@ mcp2221_error mcp2221_i2cState(mcp2221_t* device, mcp2221_i2c_state_t* state);
 * @return ::mcp2221_error error code
 * @note I2C is not fully implemented yet
 */
-mcp2221_error mcp2221_i2cDivider(mcp2221_t* device, int i2cdiv);
+LIB_EXPORT mcp2221_error mcp2221_i2cDivider(mcp2221_t* device, int i2cdiv);
 
 /**
 * @brief Read raw values of I2C pins. Allows using these pins as 2 additional input pins
@@ -847,7 +853,7 @@ mcp2221_error mcp2221_i2cDivider(mcp2221_t* device, int i2cdiv);
 * @param [pins] Pointer to mcp2221_i2cpins_t struct to place values into
 * @return ::mcp2221_error error code
 */
-mcp2221_error mcp2221_i2cReadPins(mcp2221_t* device, mcp2221_i2cpins_t* pins);
+LIB_EXPORT mcp2221_error mcp2221_i2cReadPins(mcp2221_t* device, mcp2221_i2cpins_t* pins);
 
 #if defined(__cplusplus)
 }
